@@ -75,7 +75,7 @@ class Statistics {
 class Draw {
     constructor() {
         this.options = ['red', 'green', 'blue']; // przechowuje nazwy kolorów które moga byc wylosowane
-        let _result = ['red', 'green', 'blue']; // wynik naszego losowania
+        let _result = this.drawResult(); // wynik naszego losowania
         this.getDrawResult = () => _result;
     }
 
@@ -92,4 +92,27 @@ class Draw {
 
 }
 
-const draw = new Draw();
+// const draw = new Draw();
+
+class Result { // przechowywanie dwóch metod, zwórci nam wynik okreslajaca kto wygrał i druga metoda okreslająca co wygrał uzytkownik
+    static moneyWinInGame(result, bid) { // metoda ststyczna, którą wywołujemy jak funkcje np. Result.pokaz();
+        // INSTANCJA w static nie jest potrzebna
+        if (result) return 3 * bid;
+        else return 0;
+    }
+
+    static checkWinner(draw) { // zasady gry
+        if (draw[0] === draw[1] && draw[1] === draw[2] || draw[0] !== draw[1] && draw[1] !== draw[2] && draw[0] !== draw[2]) return true;
+        else return false;
+    }
+}
+
+Result.moneyWinInGame(true, 100) // wywołanie metody statycznej
+
+// klasa główna
+
+class Game {
+    constructor() {
+
+    }
+}
