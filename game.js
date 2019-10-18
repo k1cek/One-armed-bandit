@@ -35,7 +35,7 @@ class Wallet { // przechowywanie stanu pieniedzy
 
 }
 
-// const wallet = new Wallet(200);
+
 
 class Statistics {
     constructor() { // tworze konstruktor przechpwujący wszystkie wyniki
@@ -69,8 +69,6 @@ class Statistics {
 
 }
 
-
-// const stats = new Statistics();
 
 class Draw {
     constructor() {
@@ -112,7 +110,71 @@ Result.moneyWinInGame(true, 100) // wywołanie metody statycznej
 // klasa główna
 
 class Game {
-    constructor() {
+    constructor(start) {
+
+        this.stats = new Statistics(); // instancje dwóch klas
+        this.wallet = new Wallet(start);
+
+        // BINDOWANIE!!! przywiazanie this aby nie utracic wiązania
+        document.getElementById('start').addEventListener('click', this.startGame.bind(this));
+        this.spanWallet = document.querySelector('.panel span.wallet');
+        this.boards = document.querySelectorAll('div.color'); // nodelist
+        this.inputBid = document.getElementById('bid');
+        this.spanResult = document.querySelector('.score span.result');
+        this.spanGames = document.querySelector('.score span.number');
+        this.spanWins = document.querySelector('.score span.win');
+        this.spanLosses = document.querySelector('.score span.loss');
+
+        this.render();
 
     }
+
+    render(colors = ['gray', 'gray', 'gray'], money = wallet.getWalletValue(), result = "", total = stats.showGameStatistic(), bid = 0, wonMoney = 0) { // metoda wyswietlająca kolory, wyswietlanie srodkow, informcje
+        console.log(`Gramy`);
+
+        if (result) {
+            result = `You won ${wonMoney}`;
+        } else if (!result && result != "") {
+            result = `You lost ${bid}`;
+        }
+
+        this.spanResult.textContent = result;
+        this.spanWallet.textContent = money;
+        this.spanGames.textContent = total[0];
+        this.spanWins.textContent = total[1];
+        this.spanLosses.textContent = total[2];
+        this.boards.forEach((board, index) => {
+            board.style.backgroundColor = colors[index]
+        })
+
+    }
+
+    startGame() {
+        console.log('start');
+        if (this.inputBid.value < 1) return alert(`Sorry, you don't have enough money`);
+        const bid = Math.floor(this.inputBid.value); // przekształcenie stringa na number
+
+        if (!this.wallet.checkCanPlay(bid)) {
+            return alert('Masz za mało środków lub nieprawidłowa wartość');
+        }
+
+        this.wallet.changeWallet(bid, "-");
+
+        this.draw = new Draw();
+        const colors = this.draw.getDrawResult();
+        const win = Result.checkWinner(colors);
+        console.log(win);
+        console.log(colors);
+
+        const wonMoney = Result.moneyWinInGame(win, bid)
+        this.wallet.changeWallet(wonMoney); // "+" ?
+        this.stats.addGameStatistic(win, bid);
+    }
+
 }
+
+const wallet = new Wallet(220);
+
+const stats = new Statistics();
+
+const game = new Game(200); // INSTANCJA KLASY GAME, STWORZENIE i URUCHOMIENIE GRY, przekazana kwota 200 do start w konstruktorze
