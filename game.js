@@ -35,17 +35,9 @@ class Wallet { // przechowywanie stanu pieniedzy
 
 }
 
-
-
 class Statistics {
     constructor() { // tworze konstruktor przechpwujący wszystkie wyniki
-        this.gameResults = [{
-            win: true,
-            bid: 2
-        }, {
-            win: false,
-            bid: -10
-        }];
+        this.gameResults = []
     }
 
     addGameStatistic(win, bid) { // metoda dodajaca lub odejmujaca wynik
@@ -133,9 +125,9 @@ class Game {
         console.log(`Gramy`);
 
         if (result) {
-            result = `You won ${wonMoney}`;
-        } else if (!result && result != "") {
-            result = `You lost ${bid}`;
+            result = `You won ${wonMoney}$`;
+        } else if (!result && result !== "") { //!!!! dwa znaki rownosci, oznacza, ze nie douszczamy niejawnej konwersji
+            result = `You lost ${bid}$`;
         }
 
         this.spanResult.textContent = result;
@@ -169,6 +161,8 @@ class Game {
         const wonMoney = Result.moneyWinInGame(win, bid)
         this.wallet.changeWallet(wonMoney); // "+" ?
         this.stats.addGameStatistic(win, bid);
+
+        this.render(colors, this.wallet.getWalletValue(), win, this.stats.showGameStatistic(), bid, wonMoney);
     }
 
 }
